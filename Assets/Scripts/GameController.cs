@@ -11,6 +11,7 @@ public class GameController : MonoBehaviour
 
     public GameObject cupPrefab;
     private GameObject _cupSpawn;
+    public GameObject _canvas;
     // Start is called before the first frame update
     void Start()
     {
@@ -18,6 +19,7 @@ public class GameController : MonoBehaviour
         _espresso.AddListener(chooseEspresso);
 
         _cupSpawn = GameObject.Find("cupSpawn");
+
     }
 
     // Update is called once per frame

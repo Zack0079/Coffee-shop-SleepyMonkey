@@ -7,6 +7,7 @@ TagManager:
   - Fluid
   - Cup
   - Bean
+  - Plate
   layers:
   - Default
   - TransparentFX
