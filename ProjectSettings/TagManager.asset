@@ -8,6 +8,10 @@ TagManager:
   - Cup
   - Bean
   - Plate
+  - Espresso
+  - Latte
+  - Americano
+  - Exit
   layers:
   - Default
   - TransparentFX

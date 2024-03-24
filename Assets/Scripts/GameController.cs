@@ -36,5 +36,8 @@ public class GameController : MonoBehaviour
 
 
         Instantiate(cupPrefab, _cupSpawn.transform.position, Quaternion.identity);
+
+        // panel setactive false
+        _canvas.SetActive(false);
     }
 }

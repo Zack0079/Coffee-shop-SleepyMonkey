@@ -26,6 +26,17 @@ public class PlateScript : MonoBehaviour
             other.gameObject.layer = 0;
             //glue the cup to the plate
             other.gameObject.transform.parent = this.transform;
+            //set other tag to espresso/latte/americano
+            this.gameObject.tag = "Espresso";
+        }
+
+        if(other.gameObject.CompareTag("Exit"))
+        {
+
+            if(this.gameObject.CompareTag("Espresso"))
+            {
+                Debug.Log("COMPLETED ORDER");
+            }
         }
     }
 }
