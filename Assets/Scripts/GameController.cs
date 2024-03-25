@@ -12,6 +12,10 @@ public class GameController : MonoBehaviour
     public GameObject cupPrefab;
     private GameObject _cupSpawn;
     public GameObject _canvas;
+
+    Vector3 beanPsoition;
+    public GameObject bean;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -19,13 +23,20 @@ public class GameController : MonoBehaviour
         _espresso.AddListener(chooseEspresso);
 
         _cupSpawn = GameObject.Find("cupSpawn");
-
+        beanPsoition = bean.transform.position;
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    public void resetBean(){
+        GameObject newBean = Instantiate(bean, beanPsoition, Quaternion.identity);
+        Destroy(bean);
+        bean = newBean;
+        newBean.SetActive(true);
     }
 
     public void chooseEspresso() {
@@ -36,7 +47,7 @@ public class GameController : MonoBehaviour
 
 
         Instantiate(cupPrefab, _cupSpawn.transform.position, Quaternion.identity);
-
+        resetBean();
         // panel setactive false
         _canvas.SetActive(false);
     }

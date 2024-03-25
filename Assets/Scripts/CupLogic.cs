@@ -24,7 +24,7 @@ public class CupLogic : MonoBehaviour
         if (other.gameObject.tag == "Bean")
         {
             Debug.Log("Ball entered the cup");
-            Destroy(other.gameObject);
+            other.gameObject.SetActive(false);
             panelPrefab.SetActive(true);
         }
     }
