@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -14,7 +15,17 @@ public class GameController : MonoBehaviour
     public GameObject _canvas;
 
     Vector3 beanPsoition;
+    Vector3 platePosition;
     public GameObject bean;
+    public GameObject plate;
+
+    // array to store current order, stores amount of milk, espresso, water
+    private int[] currentOrder= new int[3];
+    private int[] correctOrder = new int[3];
+
+    private int currentEspresso = 0;
+    private int currentWater = 0;
+    private int currentMilk = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -24,6 +35,24 @@ public class GameController : MonoBehaviour
 
         _cupSpawn = GameObject.Find("cupSpawn");
         beanPsoition = bean.transform.position;
+
+        // set plate position the very first time
+        platePosition = plate.transform.position;
+
+        // make sure the current order is empty
+        // 0 = milk, 1 = espresso, 2 = water
+        currentOrder[0] = 0;
+        currentOrder[1] = 0;
+        currentOrder[2] = 0;
+
+        currentEspresso = 0;
+        currentWater = 0;
+        currentMilk = 0;
+
+        // IF CURRENT SCENE IS LEVEL 2 THEN GENERATE ORDER
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "Level2"){
+            generateOrder();
+        }
     }
 
     // Update is called once per frame
@@ -39,16 +68,83 @@ public class GameController : MonoBehaviour
         newBean.SetActive(true);
     }
 
+    public void resetPlate(){
+        GameObject newPlate = Instantiate(plate, platePosition, Quaternion.identity);
+    }
+
+
     public void chooseEspresso() {
         Debug.Log("Espresso");
         // Instantiate cupPrefab at (Machine) GameObject
         // Find gameobject called cupSpawn
         // Instantiate cupPrefab at cupSpawn position
-
-
         Instantiate(cupPrefab, _cupSpawn.transform.position, Quaternion.identity);
         resetBean();
+        resetPlate();
         // panel setactive false
         _canvas.SetActive(false);
+    }
+
+    //!!! LEVEL 2 CODE !!!
+    // function to generate 3 random orders
+    public void generateOrder(){
+        // make it so that the current order is empty
+        currentOrder[0] = 0;
+        currentOrder[1] = 0;
+        currentOrder[2] = 0;
+        // generate 3 random numbers between 0 and 2
+        int milk = Random.Range(0, 3);
+        int espresso = Random.Range(0, 3);
+        int water = Random.Range(0, 3);
+
+        // set the current order to the random numbers
+        correctOrder[0] = milk;
+        correctOrder[1] = espresso;
+        correctOrder[2] = water;
+
+        Debug.Log("Correct Order: Milk: " + correctOrder[0] + " Espresso:" + correctOrder[1] + " Water: " + correctOrder[2]);
+    }
+
+
+
+        // function to add a certain amount of espresso
+    public void addEspresso(){
+        currentEspresso++;
+        currentOrder[1] = currentEspresso;
+        Debug.Log("Current Order: Milk: " + currentOrder[0] + " Espresso:" + currentOrder[1] + " Water: " + currentOrder[2]);
+
+    }
+
+    public void addMilk(){
+        currentMilk++;
+        currentOrder[0] = currentMilk;
+        Debug.Log("Current Order: Milk: " + currentOrder[0] + " Espresso:" + currentOrder[1] + " Water: " + currentOrder[2]);
+        }
+
+    public void addWater(){
+        currentWater++;
+        currentOrder[2] = currentWater;
+        Debug.Log("Current Order: Milk: " + currentOrder[0] + " Espresso:" + currentOrder[1] + " Water: " + currentOrder[2]);
+    }
+
+    public void clearOrder(){
+        currentOrder[0] = 0;
+        currentOrder[1] = 0;
+        currentOrder[2] = 0;
+        currentEspresso = 0;
+        currentWater = 0;
+        currentMilk = 0;
+    }
+
+    public void createCup(){
+        // check if the current order is correct
+        if(currentOrder.SequenceEqual(correctOrder)){
+            Debug.Log("Correct Order");
+            chooseEspresso();
+            // generate a new order
+        } else {
+            Debug.Log("Incorrect Order");
+        }
+        clearOrder();
     }
 }
