@@ -4,6 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
@@ -23,6 +24,7 @@ public class GameController : MonoBehaviour
     // array to store current order, stores amount of milk, espresso, water
     private int[] currentOrder = new int[3];
     private int[] correctOrder = new int[3];
+    private int[] correctSetOrder = new int[3];
 
     private int currentEspresso = 0;
     private int currentWater = 0;
@@ -38,6 +40,13 @@ public class GameController : MonoBehaviour
     public TMP_Text currentEspressoNumber;
     public TMP_Text currentWaterNumber;
     public bool showOrder = false;
+
+    // !!!LEVEL 3 SLIDERS!!!
+    public Slider espressoSlider;
+    public Slider milkSlider;
+    public Slider waterSlider;
+
+    private string correctSetOrderName;
 
     // Start is called before the first frame update
     void Start()
@@ -71,12 +80,31 @@ public class GameController : MonoBehaviour
         {
             showStepController = gameObject.GetComponent<ShowStep>();
         }
+
+        // !!!LEVEL 3 SLIDERS!!!
+        espressoSlider.onValueChanged.AddListener(setEspresso);
+        milkSlider.onValueChanged.AddListener(setMilk);
+        waterSlider.onValueChanged.AddListener(setWater);
+
+        // IF CURRENT SCENE IS LEVEL 3 THEN GENERATE ORDER
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "Level3")
+        {
+            correctSetOrderName = "";
+            correctSetOrder = new int[3];
+            generateSetOrder();
+            Debug.Log("Correct Set Order Name: " + correctSetOrderName);
+            Debug.Log("Correct Set Order: Milk: " + correctSetOrder[0] + " Espresso:" + correctSetOrder[1] + " Water: " + correctSetOrder[2]);
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        // Find current order text and set it to correctSetOrderName
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "Level3")
+        {
+            GameObject.Find("Order").GetComponent<TMP_Text>().text = "Order: " + correctSetOrderName;
+        }
     }
 
     public void resetBean()
@@ -99,10 +127,12 @@ public class GameController : MonoBehaviour
 
     public void chooseEspresso()
     {
-        Debug.Log("Espresso");
         // Instantiate cupPrefab at (Machine) GameObject
         // Find gameobject called cupSpawn
         // Instantiate cupPrefab at cupSpawn position
+        // Generate a new correct order
+        generateSetOrder();
+
         Instantiate(cupPrefab, _cupSpawn.transform.position, Quaternion.identity);
         if (showStep)
         {
@@ -188,6 +218,10 @@ public class GameController : MonoBehaviour
         currentEspresso = 0;
         currentWater = 0;
         currentMilk = 0;
+        // RESET Sliders
+        espressoSlider.value = 0;
+        milkSlider.value = 0;
+        waterSlider.value = 0;
     }
 
     public void createCup()
@@ -212,4 +246,87 @@ public class GameController : MonoBehaviour
         }
         clearOrder();
     }
+
+    // !!! LEVEL 3 CODE !!!
+    // set esoressi, milk, water sliders
+    public void setEspresso(float value)
+    {
+        currentOrder[1] = (int)value;
+        Debug.Log("Espresso: " + value);
+    }
+
+    public void setMilk(float value)
+    {
+        currentOrder[0] = (int)value;
+        Debug.Log("Milk: " + value);
+    }
+
+    public void setWater(float value)
+    {
+        currentOrder[2] = (int)value;
+        Debug.Log("Water: " + value);
+    }
+
+
+    public void generateSetOrder()
+    {
+        // create 3 preset orders and then randomly choose one and set as correctSetOrder
+        // Americano = 2/3 water, 1/3 espresso
+        // Latte = 2/3 milk, 1/3 espresso
+        // Espresso = 1/3 espresso
+        // make sure the current order is empty
+        correctSetOrder[0] = 0;
+        correctSetOrder[1] = 0;
+        correctSetOrder[2] = 0;
+
+
+        int[] americano = new int[3];
+        americano[0] = 0;
+        americano[1] = 1;
+        americano[2] = 2;
+
+        int[] latte = new int[3];
+        latte[0] = 2;
+        latte[1] = 1;
+        latte[2] = 0;
+
+        int[] espresso = new int[3];
+        espresso[0] = 0;
+        espresso[1] = 3;
+        espresso[2] = 0;
+
+        // randomly choose one of the 3 orders
+        int randomOrder = Random.Range(0, 3);
+
+        if (randomOrder == 0)
+        {
+            correctSetOrderName = "Americano";
+            correctSetOrder = americano;
+        }
+        else if (randomOrder == 1)
+        {
+            correctSetOrderName = "Latte";
+            correctSetOrder = latte;
+        }
+        else
+        {
+            correctSetOrderName = "Espresso";
+            correctSetOrder = espresso;
+        }
+    }
+
+    public void createCupLevel3(){
+        // check if the current order is correct
+        if (currentOrder.SequenceEqual(correctSetOrder))
+        {
+            Debug.Log("Correct Order");
+            chooseEspresso();
+        }
+        else
+        {
+            Debug.Log("Incorrect Order");
+        }
+        clearOrder();
+    }
+
 }
