@@ -7,10 +7,16 @@ public class CupLogic : MonoBehaviour
 {
     // Reference to the panel prefab
     public GameObject panelPrefab;
+
+    private ShowStep showStepController;
+    public bool showStep = false;
     // Start is called before the first frame update
     void Start()
     {
         panelPrefab.SetActive(false);
+        if(showStep){
+            showStepController =  GameObject.Find("GameController").GetComponent<ShowStep>();
+        }
     }
 
     // Update is called once per frame
@@ -26,6 +32,7 @@ public class CupLogic : MonoBehaviour
             Debug.Log("Ball entered the cup");
             other.gameObject.SetActive(false);
             panelPrefab.SetActive(true);
+            showStepController.ShowNext(0);
         }
     }
 

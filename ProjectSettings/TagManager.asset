@@ -12,6 +12,7 @@ TagManager:
   - Latte
   - Americano
   - Exit
+  - Step
   layers:
   - Default
   - TransparentFX

@@ -27,6 +27,9 @@ public class GameController : MonoBehaviour
     private int currentWater = 0;
     private int currentMilk = 0;
 
+    private ShowStep showStepController;
+    public bool showStep = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -53,6 +56,10 @@ public class GameController : MonoBehaviour
         if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "Level2"){
             generateOrder();
         }
+
+        if(showStep){
+            showStepController =  gameObject.GetComponent<ShowStep>();
+        }
     }
 
     // Update is called once per frame
@@ -70,6 +77,9 @@ public class GameController : MonoBehaviour
 
     public void resetPlate(){
         GameObject newPlate = Instantiate(plate, platePosition, Quaternion.identity);
+        if(showStep){
+            newPlate.GetComponent<PlateScript>().showStep = true;
+        }
     }
 
 
@@ -79,6 +89,9 @@ public class GameController : MonoBehaviour
         // Find gameobject called cupSpawn
         // Instantiate cupPrefab at cupSpawn position
         Instantiate(cupPrefab, _cupSpawn.transform.position, Quaternion.identity);
+        if(showStep){
+            showStepController.ShowNext(1);
+        }
         resetBean();
         resetPlate();
         // panel setactive false
