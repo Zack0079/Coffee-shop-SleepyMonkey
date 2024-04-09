@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlateScript : MonoBehaviour
 {
     
-    private ShowStep showStepController;
+    private ShowStep showStepController = null;
     public bool showStep = false;
     // Start is called before the first frame update
     void Start()
