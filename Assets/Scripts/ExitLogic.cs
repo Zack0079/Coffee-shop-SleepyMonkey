@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ExitLogic : MonoBehaviour
 {
-    public GameObject plate;
+    public GameController gameController ;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,6 +24,9 @@ public class ExitLogic : MonoBehaviour
         {
             Debug.Log("COMPLETED ORDER");
             Destroy(other.gameObject);
+            if(gameController != null){
+                gameController.CompleteOrder();
+            }
         }
     }
 }

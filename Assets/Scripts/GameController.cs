@@ -48,6 +48,12 @@ public class GameController : MonoBehaviour
 
     private string correctSetOrderName;
 
+    [Header("Mission States")]
+    public TMP_Text finishedNumber;
+    public GameObject nextButton;
+    public int requestOfCups = 3;
+    private int amountOfCups = -1;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -82,10 +88,12 @@ public class GameController : MonoBehaviour
         }
 
         // !!!LEVEL 3 SLIDERS!!!
-        espressoSlider.onValueChanged.AddListener(setEspresso);
-        milkSlider.onValueChanged.AddListener(setMilk);
-        waterSlider.onValueChanged.AddListener(setWater);
-
+        if (espressoSlider != null && milkSlider != null && waterSlider != null)
+        {
+            espressoSlider.onValueChanged.AddListener(setEspresso);
+            milkSlider.onValueChanged.AddListener(setMilk);
+            waterSlider.onValueChanged.AddListener(setWater);
+        }
         // IF CURRENT SCENE IS LEVEL 3 THEN GENERATE ORDER
         if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name == "Level3")
         {
@@ -95,6 +103,7 @@ public class GameController : MonoBehaviour
             Debug.Log("Correct Set Order Name: " + correctSetOrderName);
             Debug.Log("Correct Set Order: Milk: " + correctSetOrder[0] + " Espresso:" + correctSetOrder[1] + " Water: " + correctSetOrder[2]);
         }
+        CompleteOrder();
     }
 
     // Update is called once per frame
@@ -219,9 +228,12 @@ public class GameController : MonoBehaviour
         currentWater = 0;
         currentMilk = 0;
         // RESET Sliders
-        espressoSlider.value = 0;
-        milkSlider.value = 0;
-        waterSlider.value = 0;
+        if(espressoSlider != null && milkSlider != null && waterSlider != null)
+        {
+            espressoSlider.value = 0;
+            milkSlider.value = 0;
+            waterSlider.value = 0;
+        }
     }
 
     public void createCup()
@@ -233,17 +245,19 @@ public class GameController : MonoBehaviour
             chooseEspresso();
             // generate a new order
             generateOrder();
-            if (showOrder)
-            {
-                currentMikeNumber.text = "M:0";
-                currentEspressoNumber.text = "E:0";
-                currentWaterNumber.text = "W:0";
-            }
         }
         else
         {
             Debug.Log("Incorrect Order");
         }
+        
+        if (showOrder)
+        {
+            currentMikeNumber.text = "M:0";
+            currentEspressoNumber.text = "E:0";
+            currentWaterNumber.text = "W:0";
+        }
+
         clearOrder();
     }
 
@@ -327,6 +341,17 @@ public class GameController : MonoBehaviour
             Debug.Log("Incorrect Order");
         }
         clearOrder();
+    }
+
+    public void CompleteOrder(){
+        if (finishedNumber)
+        {
+            amountOfCups++;
+            finishedNumber.text =  amountOfCups.ToString() + " / " + requestOfCups.ToString();
+            if(amountOfCups == requestOfCups){
+                nextButton.SetActive(true);
+            }
+        }
     }
 
 }
